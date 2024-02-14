@@ -1,0 +1,48 @@
+FROM golang:latest
+
+
+WORKDIR /go/src/app
+
+
+COPY server.go .
+COPY client.go .
+COPY proto proto
+
+
+RUN go get -u google.golang.org/grpc
+RUN go get -u github.com/golang/protobuf/protoc-gen-go
+
+
+RUN protoc --go_out=plugins=grpc:proto proto/currency.proto
+
+
+RUN go build -o server server.go
+RUN go build -o client client.go
+
+
+EXPOSE 50051
+
+
+CMD ["sh", "-c", "./server & sleep 5 && ./client"]
+
+FROM golang:latest
+
+
+WORKDIR /go/src/app
+
+COPY client.go .
+COPY proto proto
+
+RUN go get -u google.golang.org/grpc
+RUN go get -u github.com/golang/protobuf/protoc-gen-go
+
+
+RUN protoc --go_out=plugins=grpc:proto proto/currency.proto
+
+
+RUN go build -o server server.go
+RUN go build -o client client.go
+
+EXPOSE 50051
+
+CMD ["sh", "-c", "./server & sleep 5 && ./client"]

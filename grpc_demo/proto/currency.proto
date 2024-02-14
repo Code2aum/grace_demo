@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+option go_package = "./proto";
+
+package currency;
+
+message Currency {
+    string name = 1;
+    float value = 2;
+}
+
+service CurrencyService {
+    rpc CreateCurrency(Currency) returns (Currency);
+    rpc ReadCurrency(ReadCurrencyRequest) returns (Currency);
+    rpc UpdateCurrency(Currency) returns (Currency);
+    rpc DeleteCurrency(DeleteCurrencyRequest) returns (DeleteCurrencyResponse);
+    rpc ListCurrencies(Empty) returns (stream Currency);
+}
+
+message ReadCurrencyRequest {
+    string name = 1;
+}
+
+message DeleteCurrencyRequest {
+    string name = 1;
+}
+
+message DeleteCurrencyResponse {
+    bool success = 1;
+}
+
+message Empty {}
